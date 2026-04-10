@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gold Price Tracker</title>
+  <style>
+    body { font-family: Arial; text-align: center; padding: 20px; }
+    .box { border: 1px solid #ddd; padding: 20px; margin: 10px; border-radius: 10px; }
+  </style>
+</head>
+<body>
+
+<h1>Gold Price Tracker</h1>
+
+<div class="box">
+  <h2>Today's Gold Rate</h2>
+  <p>24K: ₹<span id="rate24">72000</span></p>
+  <p>22K: ₹<span id="rate22">66000</span></p>
+</div>
+
+<div class="box">
+  <h2>Lowest Deal</h2>
+  <p id="deal"></p>
+</div>
+
+<script>
+let sellers = [
+  {name: "Tanishq", price: 66500},
+  {name: "Local Shop", price: 65500},
+  {name: "Malabar", price: 66000}
+];
+
+let lowest = sellers.reduce((min, s) => s.price < min.price ? s : min);
+document.getElementById("deal").innerText =
+  lowest.name + " - ₹" + lowest.price + " (Best Deal)";
+</script>
+
+</body>
+</html>
