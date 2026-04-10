@@ -23,16 +23,37 @@
 </div>
 
 <script>
-let sellers = [
-  {name: "Tanishq", price: 66500},
-  {name: "Local Shop", price: 65500},
-  {name: "Malabar", price: 66000}
-];
+async function getGoldPrice() {
+  try {
+    // 1. Get gold price (USD per ounce)
+    const goldRes = await fetch("https://api.metals.live/v1/spot/gold");
+    const goldData = await goldRes.json();
+    let usdPerOunce = goldData[0].price;
 
-let lowest = sellers.reduce((min, s) => s.price < min.price ? s : min);
-document.getElementById("deal").innerText =
-  lowest.name + " - ₹" + lowest.price + " (Best Deal)";
+    // 2. Get USD → INR rate
+    const forexRes = await fetch("https://api.exchangerate-api.com/v4/latest/USD");
+    const forexData = await forexRes.json();
+    let usdToInr = forexData.rates.INR;
+
+    // 3. Convert to INR per gram
+    let inrPerOunce = usdPerOunce * usdToInr;
+    let inrPerGram = inrPerOunce / 31.1;
+
+    // 4. Convert to per 10g (India standard)
+    let rate24 = Math.round(inrPerGram * 10);
+    let rate22 = Math.round(rate24 * 0.92);
+
+    // 5. Show on website
+    document.getElementById("rate24").innerText = rate24;
+    document.getElementById("rate22").innerText = rate22;
+
+  } catch (err) {
+    document.getElementById("rate24").innerText = "Error";
+    document.getElementById("rate22").innerText = "Error";
+  }
+}
+
+getGoldPrice();
 </script>
-
 </body>
 </html>
