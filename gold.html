@@ -1,1 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gold Price India</title>
+</head>
+<body>
 
+<h2>Gold Price</h2>
+
+<p>24K: <span id="gold24">Loading...</span></p>
+<p>22K: <span id="gold22">Loading...</span></p>
+
+<script>
+async function getGoldPrice() {
+  try {
+    const res = await fetch("https://api.gold-api.com/price/XAU");
+    const data = await res.json();
+
+    // USD per ounce → INR per gram
+    const usdToInr = 83; // approx rate
+    const pricePerGram24 = (data.price / 31.1) * usdToInr;
+
+    const price24 = pricePerGram24.toFixed(2);
+    const price22 = (pricePerGram24 * 0.916).toFixed(2);
+
+    document.getElementById("gold24").innerText = "₹ " + price24;
+    document.getElementById("gold22").innerText = "₹ " + price22;
+
+  } catch (err) {
+    document.getElementById("gold24").innerText = "Error loading";
+    document.getElementById("gold22").innerText = "Error loading";
+    console.log(err);
+  }
+}
+
+getGoldPrice();
+</script>
+
+</body>
+</html>
